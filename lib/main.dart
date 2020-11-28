@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'dart:async';
+
 void main() {
   runApp(MyApp());
 }
@@ -29,12 +31,46 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  static Random rng=new Random();
-  static List<int> snakePositions=[45,65,85,105,125];
-  int numberOfSquare=760;
-  var duration= const Duration(milliseconds: 300);
-  int foodPosition=rng.nextInt(761)-1;
-  String direction="Down";
+  static Random rng = new Random();
+  static List<int> snakePositions = [45, 65, 85, 105, 125];
+  int numberOfSquare = 760;
+  var duration = const Duration(milliseconds: 300);
+  int foodPosition = rng.nextInt(761) - 1;
+  String direction = "Down";
+  void startGame() {
+    snakePositions = [45, 65, 85, 105, 125];
+    Timer.periodic(duration, (timer) {
+      updateSnake();
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    startGame();
+  }
+
+  void updateSnake() {
+    setState(() {
+      switch (direction) {
+        case "down":
+          if (snakePositions.last > 740) {
+            snakePositions.add(snakePositions.last + 20 - 760);
+          } else {
+            snakePositions.add(snakePositions.last + 20);
+          }
+          break;
+        case "up":
+          if (snakePositions.last < 20) {
+            snakePositions.add(snakePositions.last + 760 - 20);
+          } else {
+            snakePositions.add(snakePositions.last - 20);
+          }
+          break;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,34 +86,32 @@ class _MyHomePageState extends State<MyHomePage> {
                   physics: NeverScrollableScrollPhysics(),
                   itemCount: 760,
                   itemBuilder: (BuildContext context, int index) {
-                    if(index==foodPosition){
+                    if (index == foodPosition) {
                       return Center(
-                          child:Container(
-                            padding: EdgeInsets.all(2),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(5),
-                              child: Container(
-                                color:Color.fromRGBO(97, 177, 90, 1),
-                              ),
-                            ),
-                          )
-                      );
+                          child: Container(
+                        padding: EdgeInsets.all(2),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(5),
+                          child: Container(
+                            color: Color.fromRGBO(97, 177, 90, 1),
+                          ),
+                        ),
+                      ));
                     }
-                    if(snakePositions.contains(index)){
+                    if (snakePositions.contains(index)) {
                       return Center(
-                          child:Container(
-                            padding: EdgeInsets.all(2),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(5),
-                              child: Container(
-                                color:Colors.white,
-                              ),
-                            ),
-                          )
-                      );
+                          child: Container(
+                        padding: EdgeInsets.all(2),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(5),
+                          child: Container(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ));
                     }
                     return Center(
-                    child:Container(
+                        child: Container(
                       padding: EdgeInsets.all(2),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(5),
@@ -85,8 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           color: Color.fromRGBO(50, 50, 50, 1),
                         ),
                       ),
-                    )
-                    );
+                    ));
                   },
                 ),
               ),

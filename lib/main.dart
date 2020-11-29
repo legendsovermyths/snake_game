@@ -38,16 +38,11 @@ class _MyHomePageState extends State<MyHomePage> {
   int foodPosition = rng.nextInt(761) - 1;
   String direction = "Down";
   void startGame() {
+    print("hri");
     snakePositions = [45, 65, 85, 105, 125];
     Timer.periodic(duration, (timer) {
       updateSnake();
     });
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    startGame();
   }
 
   void updateSnake() {
@@ -78,6 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Column(
         children: <Widget>[
           Expanded(
+            flex: 9,
             child: GestureDetector(
               child: Container(
                 child: GridView.builder(
@@ -122,6 +118,22 @@ class _MyHomePageState extends State<MyHomePage> {
                     ));
                   },
                 ),
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              color: Colors.black54,
+              child: Row(
+                children: <Widget>[
+                  MaterialButton(
+                    child: Text("Anirudh"),
+                    onPressed: (){
+                      startGame();
+                    },
+                  )
+                ],
               ),
             ),
           )

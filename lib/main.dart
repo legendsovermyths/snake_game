@@ -34,11 +34,14 @@ class _MyHomePageState extends State<MyHomePage> {
   static Random rng = new Random();
   static List<int> snakePositions = [45, 65, 85, 105, 125];
   int numberOfSquare = 760;
-  var duration = const Duration(milliseconds: 300);
-  int foodPosition = rng.nextInt(761) - 1;
-  String direction = "Down";
+  var duration = const Duration(milliseconds: 100);
+  int foodPosition = rng.nextInt(700) - 1;
+  void generateFood() {
+    foodPosition = rng.nextInt(700) - 1;
+  }
+
+  String direction = "down";
   void startGame() {
-    print("hri");
     snakePositions = [45, 65, 85, 105, 125];
     Timer.periodic(duration, (timer) {
       updateSnake();
@@ -62,6 +65,26 @@ class _MyHomePageState extends State<MyHomePage> {
             snakePositions.add(snakePositions.last - 20);
           }
           break;
+        case "left":
+          if (snakePositions.last % 20 == 0) {
+            snakePositions.add(snakePositions.last - 1 + 20);
+          } else {
+            snakePositions.add(snakePositions.last - 1);
+          }
+          break;
+        case "right":
+          if ((snakePositions.last + 1) % 20 == 0) {
+            snakePositions.add(snakePositions.last + 1 - 20);
+          } else {
+            snakePositions.add(snakePositions.last + 1);
+          }
+          break;
+        default:
+      }
+      if (snakePositions.last == foodPosition) {
+        generateFood();
+      } else {
+        snakePositions.removeAt(0);
       }
     });
   }
@@ -75,6 +98,27 @@ class _MyHomePageState extends State<MyHomePage> {
           Expanded(
             flex: 9,
             child: GestureDetector(
+              onVerticalDragUpdate: (details) {
+                if (direction != "down" && details.delta.dy < 0) {
+                  print("left");
+
+                  direction = 'up';
+                }
+                if (direction != 'up' && details.delta.dy > 0) {
+                  print("right");
+                  direction = 'down';
+                }
+              },
+              onHorizontalDragUpdate: (details) {
+                if (direction != "right" && details.delta.dx < 0) {
+                  print("up");
+                  direction = 'left';
+                }
+                if (direction != 'left' && details.delta.dx > 0) {
+                  print("down");
+                  direction = 'right';
+                }
+              },
               child: Container(
                 child: GridView.builder(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -128,8 +172,11 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Row(
                 children: <Widget>[
                   MaterialButton(
-                    child: Text("Anirudh"),
-                    onPressed: (){
+                    child: Text(
+                      "Start Game",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () {
                       startGame();
                     },
                   )
